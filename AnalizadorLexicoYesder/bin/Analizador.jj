@@ -1,0 +1,162 @@
+/**
+* JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC
+1.5.0+
+*/
+options
+{
+static = true;
+}
+PARSER_BEGIN(AnalizadorLexico)
+public class AnalizadorLexico
+{
+static int numero = 0;
+private static void grabarLexema (int n, String token, String lexema, int
+nL, int nC) {
+System.out.println(n + "- Token: "+ token + " Lexema:" + lexema + "Linea: "+ nL + "Columna:" +nC);
+}
+private static void grabarDatosPieza(int n, String token, Token pieza) {
+grabarLexema(n, token, pieza.image, pieza.beginLine, pieza.beginColumn );
+}
+
+public static void main(String args []) throws ParseException
+{
+try
+{
+System.out.println("Ingrese el código a analizar:");
+AnalizadorLexico parser = new AnalizadorLexico(System.in);
+parser.TokenList();
+System.out.println("Analisis terminado:");
+System.out.println("no se han hallado errores léxicos");
+
+
+}catch(TokenMgrError te)
+{
+System.out.println("Se han encontrado errores lexicos.");
+System.out.println(te.getMessage());
+
+}
+catch(ParseException e)
+{
+System.out.println("Analizador: Se han encontrado errores en el analisis.");
+System.out.println(e.getMessage());
+}
+}
+}
+PARSER_END(AnalizadorLexico)
+/* Espacio en blanco, saltos de linea, tabulares */
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+TOKEN : /* TERMINAL DE LINEA */
+{
+  < TERMINAL : "." >
+}
+TOKEN : /*  PALABRA RESERVADA*/
+{
+< PALABRARESERVADALEER : "Leer" >
+| <PALABRARESERVADASI : "Si" >
+| <PALABRARESERVADAENTONCES : "Entonces" >
+| <PALABRARESERVADASINO : "Sino" >
+| <PALABRARESERVADAFINSI : "Finsi" >
+| <PALABRARESERVADAESCRIBIR : "Escribir" >
+}
+TOKEN : /* TIPOS DE DATO */
+{
+  < TIPODATOENTERO : "Numero" >
+| < TIPODATOCADENA : "Cadena">
+}
+TOKEN : /*  OPERADOR COMPARACION*/
+{
+< OPERADORCOMPARACIONMAYOR : ">" >
+| <OPERADORCOMPARACIONMENOR : "<" >
+}
+TOKEN : /*  CONCATENACION*/
+{
+< CONCATENACION : "@" >
+
+}
+TOKEN : /* COMENTARIO  */
+{
+ <COMENTARIO : ( ("##")(~["#"])*("##") )>
+ 
+}
+
+TOKEN : /* CORCHETES */
+{
+  < ABRIRCORCHETE : "[" >
+|<  CERRARCORCHETE : "]" >
+
+}
+
+TOKEN : /* CADENA  DE TEXTO */
+{
+  <CADENAS : "\"" ((~["\""])*)"\"" >
+}
+TOKEN : /* IDENTIFICADOR*/
+{
+< IDENTIFICADOR : (["a"-"z","A"-"Z"])*>
+}
+
+TOKEN : /* ASIGNACION */
+{
+<ASIGNACION : "=">
+}
+TOKEN : /* OPERADOR ARITMETICO */
+{
+  <OPERADORSUMA : "+" >
+| <OPERADORMULTIPLICACION : "*">
+|< OPERADORDIVIDIDO : "/" >
+|< OPERADORMENOS : "-" >
+}
+
+
+
+
+
+/**
+* Reconoce el contenido completo de un archivo
+*
+* TokenList -> (TokenElement)*
+*/
+void TokenList():
+{}
+{
+( TokenElement() )*
+}
+void TokenElement():
+{Token pieza; }
+{
+pieza = <TERMINAL> { numero++; grabarDatosPieza(numero, "TERMINAL DE LINEA" , pieza); }
+| pieza = <COMENTARIO> { numero++; grabarDatosPieza(numero,
+"COMENTARIO", pieza); }
+| pieza = <PALABRARESERVADAESCRIBIR> { numero++; grabarDatosPieza(numero, "palabra reservada Escribir",
+pieza); }
+| pieza = <IDENTIFICADOR> { numero++; grabarDatosPieza(numero, "IDENTIFICADOR",
+pieza); }
+| pieza = <ABRIRCORCHETE> { numero++; grabarDatosPieza(numero, "abrir corchete", pieza); }
+| pieza = <CADENAS> { numero++; grabarDatosPieza(numero, "cadena de texto", pieza); }
+| pieza = <CERRARCORCHETE> { numero++; grabarDatosPieza(numero, "cerrar corchete", pieza); }
+| pieza = <ASIGNACION> { numero++; grabarDatosPieza(numero, "ASIGNACION", pieza); }
+| pieza = <PALABRARESERVADALEER> { numero++; grabarDatosPieza(numero, "palabra reservada leer", pieza); }
+| pieza = <OPERADORCOMPARACIONMAYOR> { numero++; grabarDatosPieza(numero, "operador de comparación mayor", pieza); }
+| pieza = <OPERADORCOMPARACIONMENOR> { numero++; grabarDatosPieza(numero, "operador de comparación menor", pieza); }
+| pieza = <PALABRARESERVADAENTONCES> { numero++; grabarDatosPieza(numero, "Palabra reservada entonces", pieza); }
+| pieza = <PALABRARESERVADASI> { numero++; grabarDatosPieza(numero, "Palabra reservada si", pieza); }
+| pieza = <PALABRARESERVADAFINSI> { numero++; grabarDatosPieza(numero, "Palabra reservada finsi", pieza); }
+| pieza = <PALABRARESERVADASINO> { numero++; grabarDatosPieza(numero, "Palabra reservada sino", pieza); }
+| pieza = <CONCATENACION> { numero++; grabarDatosPieza(numero, "Concatenacion", pieza); }
+| pieza = <TIPODATOENTERO> { numero++; grabarDatosPieza(numero, "Tipo de dato entero", pieza); }
+| pieza = <OPERADORSUMA> { numero++; grabarDatosPieza(numero, "Operador suma", pieza); }
+| pieza = <OPERADORMENOS> { numero++; grabarDatosPieza(numero, "Operador resta", pieza); }
+| pieza = <OPERADORMULTIPLICACION> { numero++; grabarDatosPieza(numero, "Operador multiplicacion", pieza); }
+| pieza = <OPERADORDIVIDIDO> { numero++; grabarDatosPieza(numero, "Operador dividido", pieza); }
+| pieza = <TIPODATOCADENA> { numero++; grabarDatosPieza(numero, "Tipo de dato cadena", pieza); }
+
+
+
+}
